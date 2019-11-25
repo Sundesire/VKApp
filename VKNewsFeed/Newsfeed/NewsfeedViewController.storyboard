@@ -1,7 +1,62 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13142" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="x6T-fn-fFc">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12042"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <scenes/>
+    <scenes>
+        <!--Newsfeed View Controller-->
+        <scene sceneID="dPA-ab-4J1">
+            <objects>
+                <viewController id="x6T-fn-fFc" customClass="NewsfeedViewController" customModule="VKNewsFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="MLx-1W-vjC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WPy-pn-OWS" customClass="GradientView" customModule="VKNewsFeed" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="startColor">
+                                        <color key="value" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="endColor">
+                                        <color key="value" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="QVz-3R-XM3">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="x6T-fn-fFc" id="62b-38-Wop"/>
+                                    <outlet property="delegate" destination="x6T-fn-fFc" id="ORg-Rs-gfD"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="WPy-pn-OWS" secondAttribute="bottom" id="0o4-ej-C00"/>
+                            <constraint firstItem="QVz-3R-XM3" firstAttribute="trailing" secondItem="oOy-af-bHl" secondAttribute="trailing" id="2zj-YK-NqA"/>
+                            <constraint firstItem="WPy-pn-OWS" firstAttribute="trailing" secondItem="oOy-af-bHl" secondAttribute="trailing" id="4ip-1N-aa9"/>
+                            <constraint firstItem="WPy-pn-OWS" firstAttribute="top" secondItem="oOy-af-bHl" secondAttribute="top" id="TQI-ZM-dVC"/>
+                            <constraint firstItem="QVz-3R-XM3" firstAttribute="top" secondItem="MLx-1W-vjC" secondAttribute="top" id="TZw-5k-raz"/>
+                            <constraint firstAttribute="bottom" secondItem="QVz-3R-XM3" secondAttribute="bottom" id="Ubn-E0-kvT"/>
+                            <constraint firstItem="QVz-3R-XM3" firstAttribute="leading" secondItem="oOy-af-bHl" secondAttribute="leading" id="d5l-EH-Meb"/>
+                            <constraint firstItem="WPy-pn-OWS" firstAttribute="leading" secondItem="oOy-af-bHl" secondAttribute="leading" id="hCq-gZ-9UN"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="oOy-af-bHl"/>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="QVz-3R-XM3" id="zCQ-UQ-WDU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8uS-hs-COn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="189.85507246376812" y="73.660714285714278"/>
+        </scene>
+    </scenes>
 </document>
