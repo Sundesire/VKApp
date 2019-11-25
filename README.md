@@ -1,6 +1,6 @@
 <snippet>
   <content><![CDATA[
-# ${1:VK App}
+# ${1:VKApp}
 VK App: Новостная лента на архитектуре VIP
 ## Описание
 Приложение основанное на курсе от Swiftbook.ru
