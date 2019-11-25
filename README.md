@@ -26,5 +26,4 @@ VK App: Новостная лента на архитектуре VIP
 
 ]]>
 </content>
-  <tabTrigger>readme</tabTrigger>
 </snippet>
