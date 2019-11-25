@@ -23,6 +23,8 @@ VK App: Новостная лента на архитектуре VIP
 1)Расширение share кнопки
 2)Переработка CollectionView и просмотр фотографий по отдельности
 3)Добавление в ленту контента кроме фото и текста
-]]></content>
+
+]]>
+</content>
   <tabTrigger>readme</tabTrigger>
 </snippet>
