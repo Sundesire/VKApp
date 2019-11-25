@@ -2,7 +2,6 @@
   <content>
     
     <![CDATA[
-
 # ${1:VKApp}
 
 VK App: Новостная лента на архитектуре VIP
