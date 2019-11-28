@@ -13,7 +13,7 @@ protocol NewsfeedDisplayLogic: class {
     func displayData(viewModel: Newsfeed.Model.ViewModel.ViewModelData)
 }
 
-class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic, NewsFeedCodeCellDelegate {
+class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
     
     var interactor: NewsfeedBusinessLogic?
     var router: (NSObjectProtocol & NewsfeedRoutingLogic)?
@@ -49,11 +49,10 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic, NewsFeedCo
         setup()
         setUpTableView()
         setUpTopBar()
-
-//        view.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
         
         interactor?.makeRequest(request: .getNewsFeed)
         interactor?.makeRequest(request: .getUser)
+        titleView.delegate = self
     }
 
     private func setUpTableView() {
@@ -109,6 +108,36 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic, NewsFeedCo
         }
     }
     
+    func setCell(cell: UITableViewCell) -> FeedViewModel.Cell{
+        guard let indexPath = tableView.indexPath(for: cell) else { fatalError() }
+        let cellViewModel = feedViewModel.cells[indexPath.row]
+        return cellViewModel
+    }
+}
+
+//MARK: - NewsFeedCellSettings
+extension NewsfeedViewController: UITableViewDelegate, UITableViewDataSource, NewsFeedCodeCellDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return feedViewModel.cells.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: NewsfeedCodeCell.reuseId, for: indexPath) as! NewsfeedCodeCell
+        let cellViewModel = feedViewModel.cells[indexPath.row]
+        cell.set(viewModel: cellViewModel)
+        cell.delegate = self
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let cellViewModel = feedViewModel.cells[indexPath.row]
+        return cellViewModel.sizes.totalHeight
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        let cellViewModel = feedViewModel.cells[indexPath.row]
+        return cellViewModel.sizes.totalHeight
+    }
     
     func revealPost(for cell: NewsfeedCodeCell) {
         let cellViewModel = setCell(cell: cell)
@@ -127,58 +156,36 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic, NewsFeedCo
     
     func share(for cell: NewsfeedCodeCell) {
         let cellViewModel = setCell(cell: cell)
-        let text = cellViewModel.text
+        let sourceId = cellViewModel.sourceId
+        let postId = cellViewModel.postId
+        let fullLink = "https://vk.com/wall\(sourceId)_\(postId)"
         
-        let activityController = UIActivityViewController(activityItems: [text!], applicationActivities: [VKActivity()])
+        let activityController = UIActivityViewController(activityItems: [fullLink], applicationActivities: [VKActivity()])
         present(activityController, animated: true)
         print("share button activated")
-        
-//
-//        if image != nil, text != nil {
-//            let activityController = UIActivityViewController(activityItems: [text, image], applicationActivities: [VKActivity()])
-//            present(activityController, animated: true)
-//        } else if image != nil, text == nil {
-//            let activityController = UIActivityViewController(activityItems: [image], applicationActivities: [VKActivity()])
-//            present(activityController, animated: true)
-//        } else if image == nil, text != nil {
-//            let activityController = UIActivityViewController(activityItems: [text], applicationActivities: [VKActivity()])
-//            present(activityController, animated: true)
-//        } else {
-//            return
-//        }
     }
-    
-    func setCell(cell: UITableViewCell) -> FeedViewModel.Cell{
-        guard let indexPath = tableView.indexPath(for: cell) else { fatalError() }
-        let cellViewModel = feedViewModel.cells[indexPath.row]
-        return cellViewModel
-    }
-    
 }
 
-//MARK: - NewsFeedCodeCellDelegate
-extension NewsfeedViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return feedViewModel.cells.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: NewsfeedCell.reuseId, for: indexPath) as! NewsfeedCell
-        let cell = tableView.dequeueReusableCell(withIdentifier: NewsfeedCodeCell.reuseId, for: indexPath) as! NewsfeedCodeCell
-        let cellViewModel = feedViewModel.cells[indexPath.row]
-        cell.set(viewModel: cellViewModel)
-        cell.delegate = self
-        return cell
-    }
-    
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let cellViewModel = feedViewModel.cells[indexPath.row]
-        return cellViewModel.sizes.totalHeight
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        let cellViewModel = feedViewModel.cells[indexPath.row]
-        return cellViewModel.sizes.totalHeight
+
+// MARK: - NewsFeedCodeCellDelegate
+
+// MARK: - TitleViewViewModelDelegate
+extension NewsfeedViewController: TitleViewViewModelDelegate {
+    func segueToSettings() {
+        print(#function)
+        router?.navigateToSettings()
     }
 }
+
+// MARK: - NewsFeedSegue
+//extension NewsfeedViewController {
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if let scene = segue.identifier {
+//            let selector = NSSelectorFromString("routeTo\(scene)WithSegue")
+//            
+//            if let router = router, router.responds(to: selector) {
+//                router.perform(selector, with: segue)
+//            }
+//        }
+//    }
+//}

@@ -74,7 +74,7 @@ struct CountableItem: Decodable {
 
 struct Likes: Decodable {
     let count: Int
-    let userLikes: Int
+    let canLike: Int
 }
 
 protocol ProfileRepresentable {

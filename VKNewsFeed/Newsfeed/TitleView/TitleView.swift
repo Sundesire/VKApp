@@ -13,7 +13,20 @@ protocol TitleViewViewModel {
     var photoUrlString: String? { get }
 }
 
+protocol TitleViewViewModelDelegate: class {
+    func segueToSettings()
+}
+
 class TitleView: UIView {
+    
+    weak var delegate: TitleViewViewModelDelegate?
+    
+    private var myButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.clipsToBounds = true
+        return button
+    }()
     
     private var myAvatarView: WebImageView = {
         let imageView = WebImageView()
@@ -28,10 +41,17 @@ class TitleView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        myButton.addTarget(self, action: #selector(performSegue), for: .touchUpInside)
+        
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(myTextField)
-        addSubview(myAvatarView)
+        addSubview(myButton)
+        myButton.addSubview(myAvatarView)
         makeConstraints()
+    }
+    
+    @objc func performSegue() {
+        delegate?.segueToSettings()
     }
     
     func set(userViewModel: TitleViewViewModel) {
@@ -39,19 +59,26 @@ class TitleView: UIView {
     }
     
     private func makeConstraints() {
-        myAvatarView.anchor(top: topAnchor,
-                            leading: nil,
-                            bottom: nil,
-                            trailing: trailingAnchor,
-                            padding: UIEdgeInsets.init(top: 4, left: 777, bottom: 777, right: 4))
         
+        myAvatarView.anchor(top: myButton.topAnchor, leading: myButton.leadingAnchor, bottom: myButton.bottomAnchor, trailing: myButton.trailingAnchor)
         myAvatarView.heightAnchor.constraint(equalTo: myTextField.heightAnchor, multiplier: 1).isActive = true
         myAvatarView.widthAnchor.constraint(equalTo: myTextField.heightAnchor, multiplier: 1).isActive = true
+        
+        myButton.anchor(top: topAnchor,
+                                   leading: nil,
+                                   bottom: nil,
+                                   trailing: trailingAnchor,
+                                   padding: UIEdgeInsets.init(top: 4, left: 777, bottom: 777, right: 4))
+               
+        myButton.heightAnchor.constraint(equalTo: myTextField.heightAnchor, multiplier: 1).isActive = true
+        myButton.widthAnchor.constraint(equalTo: myTextField.heightAnchor, multiplier: 1).isActive = true
+        
+        
         
         myTextField.anchor(top: topAnchor,
                            leading: leadingAnchor,
                            bottom: bottomAnchor,
-                           trailing: myAvatarView.leadingAnchor,
+                           trailing: myButton.leadingAnchor,
                            padding: UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 12))
     }
     
@@ -61,8 +88,10 @@ class TitleView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        myAvatarView.layer.masksToBounds = true
-        myAvatarView.layer.cornerRadius = myAvatarView.frame.width / 2
+        
+        myButton.layer.masksToBounds = true
+        myButton.layer.cornerRadius = myButton.frame.width / 2
+        
     }
     
     required init?(coder: NSCoder) {

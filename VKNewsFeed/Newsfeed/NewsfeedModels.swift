@@ -52,7 +52,7 @@ struct FeedViewModel {
         var date: String
         var text: String?
         var likes: String?
-        var isLiked: Int?
+        var canBeLiked: Int?
         var comments: String?
         var shares: String?
         var views: String?

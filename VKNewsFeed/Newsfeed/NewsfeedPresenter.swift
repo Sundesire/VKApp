@@ -70,7 +70,7 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
                                        date: dateTitle,
                                        text: postText,
                                        likes: formattedCounter(feeditem.likes?.count),
-                                       isLiked: feeditem.likes?.userLikes,
+                                       canBeLiked: feeditem.likes?.canLike,
                                        comments: formattedCounter(feeditem.comments?.count),
                                        shares: formattedCounter(feeditem.reposts?.count),
                                        views: formattedCounter(feeditem.views?.count),

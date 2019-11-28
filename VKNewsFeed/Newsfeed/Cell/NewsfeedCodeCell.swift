@@ -126,18 +126,18 @@ final class NewsfeedCodeCell: UITableViewCell {
     }()
     
     //MARK: - Fourth layer on bottomView
-    //    let likesImage: UIImageView = {
-    //        let imageView = UIImageView()
-    //        imageView.translatesAutoresizingMaskIntoConstraints = false
-    //        imageView.image = #imageLiteral(resourceName: "like")
-    //        return imageView
-    //    }()
-    
     let likesButton: UIButton = {
-        let likesButton = UIButton()
-        likesButton.translatesAutoresizingMaskIntoConstraints = false
-        likesButton.setImage(#imageLiteral(resourceName: "like"), for: .normal)
-        return likesButton
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .clear
+        return button
+    }()
+    
+    let likesImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = #imageLiteral(resourceName: "like")
+        return imageView
     }()
     
     let commentsImage: UIImageView = {
@@ -204,7 +204,7 @@ final class NewsfeedCodeCell: UITableViewCell {
         postImageView.set(imageURL: nil)
     }
     
-    private var isLiked: Int = 0
+    private var canBeLiked: Int = 0
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -222,7 +222,8 @@ final class NewsfeedCodeCell: UITableViewCell {
         selectionStyle = .none
         
         moreTextButton.addTarget(self, action: #selector(moreTextButtonTouch), for: .touchUpInside)
-        likesButton.addTarget(self, action: #selector(likesButtonTouch), for: .touchUpInside)
+        //        likesButton.addTarget(self, action: #selector(likesButtonTouch), for: .touchUpInside)
+        likesButton.addTarget(self, action: #selector(likesViewButtonTouch), for: .touchUpInside)
         sharesButton.addTarget(self, action: #selector(shareButtonTouch), for: .touchUpInside)
         
         
@@ -242,23 +243,30 @@ final class NewsfeedCodeCell: UITableViewCell {
     }
     
     
-    @objc func likesButtonTouch() {
-        if isLiked == 0 {
+    @objc func likesViewButtonTouch() {
+        
+        if canBeLiked == 1 {
             delegate?.likeAdded(for: self)
-            likesButton.setImage(#imageLiteral(resourceName: "likePressed"), for: .normal)
+            likesImage.image = #imageLiteral(resourceName: "likePressed")
             
-            guard var likesInt = Int(likesLabel.text!) else { return }
-            likesInt += 1
-            likesLabel.text = String(likesInt)
-            isLiked = 1
-        } else {
+            print("Likes label :\(String(describing: likesLabel.text))")
+            
+            if likesLabel.text == nil {
+                likesLabel.text = "1"
+                canBeLiked = 0
+            } else {
+                guard let likesInt = Int(likesLabel.text!) else { return }
+                likesLabel.text = String(likesInt + 1)
+                canBeLiked = 0
+            }
+        } else if canBeLiked == 0 {
             guard var likesInt = Int(likesLabel.text!) else { return }
             if likesInt > 0 {
                 delegate?.likeRemoved(for: self)
-                likesButton.setImage(#imageLiteral(resourceName: "like"), for: .normal)
+                likesImage.image = #imageLiteral(resourceName: "like")
                 likesInt -= 1
                 likesLabel.text = String(likesInt)
-                isLiked = 0
+                canBeLiked = 0
             }
         }
     }
@@ -272,17 +280,18 @@ final class NewsfeedCodeCell: UITableViewCell {
         commentsLabel.text = viewModel.comments
         sharesLabel.text = viewModel.shares
         viewsLabel.text = viewModel.views
-        isLiked = viewModel.isLiked!
+        canBeLiked = viewModel.canBeLiked!
+        
         
         
         postLabel.frame = viewModel.sizes.postLabelFrame
         bottomView.frame = viewModel.sizes.bottomViewFrame
         moreTextButton.frame = viewModel.sizes.moreTextButtonFrame
         
-        if isLiked == 0{
-            likesButton.setImage(#imageLiteral(resourceName: "like"), for: .normal)
+        if canBeLiked == 0 {
+            likesImage.image = #imageLiteral(resourceName: "likePressed")
         } else {
-            likesButton.setImage(#imageLiteral(resourceName: "likePressed"), for: .normal)
+            likesImage.image = #imageLiteral(resourceName: "like")
         }
         
         if let photoAttachment = viewModel.photoAttachments.first, viewModel.photoAttachments.count == 1 {
@@ -310,17 +319,19 @@ final class NewsfeedCodeCell: UITableViewCell {
     
     private func overlayFourthLayerOnBottomViewViews() {
         
-        
         likesView.addSubview(likesButton)
-        likesView.addSubview(likesLabel)
-        likesButton.centerYAnchor.constraint(equalTo: likesView.centerYAnchor).isActive = true
-        likesButton.leadingAnchor.constraint(equalTo: likesView.leadingAnchor, constant: 10).isActive = true
-        likesButton.widthAnchor.constraint(equalToConstant: Constants.bottomViewViewsIconSize).isActive = true
-        likesButton.heightAnchor.constraint(equalToConstant: Constants.bottomViewViewsIconSize).isActive = true
+        likesButton.addSubview(likesImage)
+        likesButton.addSubview(likesLabel)
         
-        likesLabel.centerYAnchor.constraint(equalTo: likesView.centerYAnchor).isActive = true
-        likesLabel.leadingAnchor.constraint(equalTo: likesButton.trailingAnchor, constant: 4).isActive = true
-        likesLabel.trailingAnchor.constraint(equalTo: likesView.trailingAnchor).isActive = true
+        likesButton.anchor(top: likesView.topAnchor, leading: likesView.leadingAnchor, bottom: likesView.bottomAnchor, trailing: likesView.trailingAnchor)
+        likesImage.centerYAnchor.constraint(equalTo: likesButton.centerYAnchor).isActive = true
+        likesImage.leadingAnchor.constraint(equalTo: likesButton.leadingAnchor, constant: 10).isActive = true
+        likesImage.widthAnchor.constraint(equalToConstant: Constants.bottomViewViewsIconSize).isActive = true
+        likesImage.heightAnchor.constraint(equalToConstant: Constants.bottomViewViewsIconSize).isActive = true
+        
+        likesLabel.centerYAnchor.constraint(equalTo: likesButton.centerYAnchor).isActive = true
+        likesLabel.leadingAnchor.constraint(equalTo: likesImage.trailingAnchor, constant: 4).isActive = true
+        likesLabel.trailingAnchor.constraint(equalTo: likesButton.trailingAnchor).isActive = true
         
         helpInFourthLayer(view: commentsView, imageView: commentsImage, label: commentsLabel)
         

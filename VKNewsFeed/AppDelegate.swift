@@ -31,6 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AuthServiceDelegate {
         
         window?.rootViewController = authVC
         window?.makeKeyAndVisible()
+        
+        
+        
         return true
     }
     
